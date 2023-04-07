@@ -16,6 +16,3 @@ g++ src/main.cpp -o PongGame -lsfml-graphics -lsfml-window -lsfml-system
 
 ## Screenshots
 ![Screenshot](screenshot/2023-04-07-094922_1366x768_scrot.png)
-
-## Contributing
-Contributions are welcome! If you have any suggestions or find any bugs, please open an issue or submit a pull request.
