@@ -148,8 +148,8 @@ int checkCollision(const std::vector<sf::RectangleShape>& paddles, sf::CircleSha
 
 void draw(sf::RenderWindow& window, const std::vector<sf::RectangleShape>& paddles, const sf::CircleShape& circle, int* p, sf::Text* text, const sf::RectangleShape& line)
 {
-    text[0].setString(std::to_string((int)p[0] / 2));
-    text[1].setString(std::to_string((int)p[1] / 2));
+    text[0].setString(std::to_string(p[0]));
+    text[1].setString(std::to_string(p[1]));
 
     window.clear();
     window.draw(circle);
@@ -160,3 +160,4 @@ void draw(sf::RenderWindow& window, const std::vector<sf::RectangleShape>& paddl
     window.draw(line);
     window.display();
 }
+
