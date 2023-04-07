@@ -48,12 +48,12 @@ int main()
     text[0].setPosition(WID / 2 - text[0].getCharacterSize() * 2, 0);
     text[1].setPosition(WID / 2 + text[0].getCharacterSize(), 0);
 
+    if (!font.loadFromFile("Inconsolata-Black.ttf"))
+    std::cout << "Error loading font" << std::endl;
 
     draw(window, paddles, circle, p, text, line);
     sf::sleep(sf::milliseconds(1125));
 
-    if (!font.loadFromFile("/usr/share/fonts/TTF/Inconsolata-Black.ttf"))
-    std::cout << "Error loading font" << std::endl;
 
     float ballX = 5, ballY = 5, negX = 1, negY = 1;
     while (window.isOpen())
@@ -65,14 +65,15 @@ int main()
              circle.getPosition().y >= HIG - circle.getRadius() * 2 )
         negY *= -1;
 
-        if (checkCollision(paddles, circle, p, ballX, ballY) == 1)
+        int collision = checkCollision(paddles, circle, p, ballX, ballY);
+        if (collision == 1)
             negX *= -1;
-        else if (checkCollision(paddles, circle, p, ballX, ballY) == 2)
+        else if (collision == 2)
         {
             ballX = 5, ballY = 5;
             circle.setPosition(WID / 2 - circle.getRadius(), HIG / 2 - circle.getRadius());
             paddles[0].setPosition(0.0f, HIG / 2 - paddles[0].getSize().y / 2);
-            paddles[1].setPosition(WID - paddles[1].getSize().x, HIG / 2 - paddles[0].getSize().y / 2);
+            paddles[1].setPosition(WID - paddles[1].getSize().x, HIG / 2 - paddles[1].getSize().y / 2);
             draw(window, paddles, circle, p, text, line);
             sf::sleep(sf::milliseconds(1125));
         }
@@ -110,11 +111,10 @@ void checkEvent(sf::RenderWindow& window, const sf::Event& event, std::vector<sf
 
 int checkCollision(const std::vector<sf::RectangleShape>& paddles, sf::CircleShape& circle, int(&p)[2], float& ballX, float& ballY)
 {
-    if (circle.getPosition().y > paddles[0].getPosition().y &&
-        circle.getPosition().y < paddles[0].getPosition().y + paddles[0].getSize().y &&
-        circle.getPosition().x < 0 + paddles[0].getSize().x &&
-        circle.getPosition().x > paddles[0].getSize().x / 2
-    ){
+    if (circle.getPosition().x <= paddles[0].getPosition().x + paddles[0].getSize().x &&
+        circle.getPosition().y >= paddles[0].getPosition().y - circle.getRadius() &&
+        circle.getPosition().y <= paddles[0].getPosition().y + paddles[0].getSize().y + circle.getRadius())
+    {
         ballX++;
         ballY++;
         circle.setPosition(sf::Vector2f(paddles[0].getSize().x, circle.getPosition().y));
@@ -122,11 +122,10 @@ int checkCollision(const std::vector<sf::RectangleShape>& paddles, sf::CircleSha
         return 1;
     }
 
-    if (circle.getPosition().y > paddles[1].getPosition().y &&
-        circle.getPosition().y < paddles[1].getPosition().y + paddles[1].getSize().y &&
-        circle.getPosition().x + circle.getRadius() * 2 > WID - paddles[1].getSize().x &&
-        circle.getPosition().x < WID - paddles[1].getSize().x
-    ){
+     if (circle.getPosition().x + circle.getRadius() * 2 >= paddles[1].getPosition().x &&
+        circle.getPosition().y >= paddles[1].getPosition().y - circle.getRadius() &&
+        circle.getPosition().y <= paddles[1].getPosition().y + paddles[1].getSize().y + circle.getRadius())
+    {
         ballX+=0.2;
         ballY+=0.2;
         circle.setPosition(sf::Vector2f(WID - (paddles[1].getSize().x + circle.getRadius() * 2), circle.getPosition().y));
@@ -134,12 +133,12 @@ int checkCollision(const std::vector<sf::RectangleShape>& paddles, sf::CircleSha
         return 1;
     }
 
-    if (circle.getPosition().x < -200)
+    if (circle.getPosition().x < 0)
     {
         p[1]++;
         return 2;
     }
-    else if (circle.getPosition().x > WID + 200)
+    else if (circle.getPosition().x > WID)
     {
         p[0]++;
         return 2;
